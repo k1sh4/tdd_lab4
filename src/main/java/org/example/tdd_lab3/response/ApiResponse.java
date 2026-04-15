@@ -1,17 +1,26 @@
-package org.example.tdd_lab3.model;
+package org.example.tdd_lab3.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ApiResponse<T> {
-    private BaseMetadata metadata;
-    private List<T> data;
+@NoArgsConstructor
+@SuperBuilder
+public class ApiResponse<M extends BaseMetadata, D> {
+    private M meta;
+    private List<D> data;
+
+    public ApiResponse(M meta, D data) {
+        this.meta = meta;
+        this.data = new ArrayList<>();
+        this.data.add(data);
+    }
+
+    public ApiResponse(M meta) {
+        this.meta = meta;
+        this.data = new ArrayList<>();
+    }
 }

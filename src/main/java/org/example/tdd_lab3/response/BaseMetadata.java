@@ -1,16 +1,22 @@
-package org.example.tdd_lab3.model;
+package org.example.tdd_lab3.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@SuperBuilder
 public class BaseMetadata {
+    @Builder.Default
     private int code = 200;
+    @Builder.Default
     private boolean success = true;
-    private String errorMessage;
+    @Builder.Default
+    private String errorMessage = null;
+
+    public BaseMetadata(int code, boolean success) {
+        this.code = code;
+        this.success = success;
+    }
 }
