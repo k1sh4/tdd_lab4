@@ -1,6 +1,8 @@
 package org.example.tdd_lab3.service;
 
 import org.example.tdd_lab3.model.Car;
+import org.example.tdd_lab3.model.PaginationMetaData;
+import org.example.tdd_lab3.request.CarPageRequest;
 import org.example.tdd_lab3.response.ApiResponse;
 import org.example.tdd_lab3.response.BaseMetadata;
 
@@ -18,4 +20,6 @@ public interface CarService {
     ApiResponse<BaseMetadata, Car> deleteAsApiResponse(String id);
 
     ApiResponse<BaseMetadata, Car> getByBrandAsApiResponse(String brand);
+
+    ApiResponse<PaginationMetaData, Car> getCarsPage(CarPageRequest request);
 }

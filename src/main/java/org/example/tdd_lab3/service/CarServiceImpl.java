@@ -2,11 +2,17 @@ package org.example.tdd_lab3.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.tdd_lab3.model.Car;
+import org.example.tdd_lab3.model.PaginationMetaData;
 import org.example.tdd_lab3.repo.CarRepository;
+import org.example.tdd_lab3.request.CarPageRequest;
 import org.example.tdd_lab3.response.ApiResponse;
 import org.example.tdd_lab3.response.BaseMetadata;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
@@ -102,4 +108,40 @@ public class CarServiceImpl implements CarService {
                 .errorMessage("Not found")
                 .build());
     }
+
+
+
+    /// //lab Panging /////////
+    @Override
+    public ApiResponse<PaginationMetaData, Car> getCarsPage(CarPageRequest request) {
+        Pageable pageable = PageRequest.of(request.page(), request.size(), Sort.by(Sort.Direction.DESC, "id"));        Page<Car> page = carRepository.findAll(pageable);
+
+        PaginationMetaData metaData = PaginationMetaData.builder()
+                .code(200)
+                .success(true)
+                .number(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .isFirst(page.isFirst())
+                .isLast(page.isLast())
+                .build();
+
+        if (page.getTotalElements() == 0) {
+            metaData.setSuccess(false);
+            metaData.setCode(404);
+            metaData.setErrorMessage("List is empty");
+            return new ApiResponse<>(metaData, page.getContent());
+        }
+
+        if (request.page() >= page.getTotalPages()) {
+            metaData.setSuccess(false);
+            metaData.setCode(400);
+            metaData.setErrorMessage("Page out of range");
+            return new ApiResponse<>(metaData, page.getContent());
+        }
+
+        return new ApiResponse<>(metaData, page.getContent());
+    }
+
 }
